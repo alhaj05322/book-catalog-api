@@ -26,7 +26,19 @@ class Book(Base):
     # Stores the filename or URL of the cover image (e.g., 'covers/book1.jpg')
     cover_image_path: Mapped[str] = mapped_column(String(255), nullable=False)
 
-    # A helpful representation method for debugging
+ # A helpful representation method for debugging
     def __repr__(self):
         return f'<Book "{self.title}" by {self.author}>'
+    
+class User(Base):
+    __tablename__ = "user"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+
+       
+    def __repr__(self):
+        return f'<Book "{self.name}" by {self.email}>'
 
