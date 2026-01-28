@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone, timedelta
 from .extensions import db
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from flask_login import UserMixin
@@ -22,7 +22,7 @@ class Book(Base):
     # Genre/Category: Optional, can be used for filtering
     genre: Mapped[str] = mapped_column(String(50), nullable=True)
     # Published Date: Stores the publication year or full date
-    published_date: Mapped[datetime.datetime] = mapped_column(DateTime(datetime=True), server_default=func.now())
+    published_date: Mapped[datetime] = mapped_column(default=datetime.now(timezone.utc))
     # Stores the filename or URL of the cover image (e.g., 'covers/book1.jpg')
     cover_image_path: Mapped[str] = mapped_column(String(255), nullable=False)
 

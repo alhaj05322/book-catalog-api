@@ -2,8 +2,11 @@ from flask import Blueprint, request, jsonify, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 from .models import Book, User
-from .extensions import db, login_manager, bp
+from .extensions import db, login_manager
+from flask import Blueprint
 import re
+
+bp = Blueprint("main", __name__)
 
 # CallBack function: used to reload the user object from the user ID stored in the session
 @login_manager.user_loader
@@ -22,17 +25,17 @@ def login():
         password = login_credentials.get("password") or ""
 
         if not email:
-            return jsonify({"success": False, "message": "Email is required"})
+            return jsonify({"success": False, "message": "Email is required"}), 401
         if not password:
-            return jsonify({"success": False, "message": "Password is required"})
+            return jsonify({"success": False, "message": "Password is required"}), 401
         
         # Get the user from the database
-        user = db.session.execute(db.select(User).filter_by(email=email)).scalar_onr()
+        user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one()
         if not user or not check_password_hash(user.password, password):
-            return jsonify({"success": False, "message": f"Invalid email or password {email}"})
+            return jsonify({"success": False, "message": f"Invalid email or password {email}"}), 401
         else:
             login_user(user, remember=True)
-            return {"success": True,"message": f"User {user.name} logged in"}
+            return jsonify({"success": True,"message": f"User {user.name} logged in"}), 200
             
         
 
@@ -52,7 +55,7 @@ def register():
             return jsonify({"success": False, "message": "User name must be between 3 and 80 chars"})
         if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
             return jsonify({"success": False,"message": "Invalid email"})
-        if len(password < 8):
+        if len(password ) < 8:
             return jsonify({"success": False,"message": "Passord need to be atleast 8 chars"})
         #Check if passord and confirm passord are matched
         if password != confirm_password:
@@ -64,7 +67,7 @@ def register():
             user = User(name = name, email = email, password = password_hash)
             db.session.add(user)
             db.session.commit()
-            return jsonify({"success": True, "message": f"User : {name} is added to the database successfuly"})
+            return jsonify({"success": True, "message": f"User : {name} is added to the database successfuly"}), 201
         except Exception as e:
             db.session.rollback()
             print(f"An error occurred during registration: {e}")
@@ -90,12 +93,12 @@ def add_books():
     pass
 
 # Endpoint to update an existing book.
-@bp.put("/api/books/<int: book_id>")
+@bp.put("/api/books/<int:book_id>")
 def update_book(book_id):
     pass
 
 # Endpoint to delete a book.
-bp.delete("/api/books<int: book_id>")
+@bp.delete("/api/books/<int:book_id>")
 def delete_book(book_id):
     pass
 

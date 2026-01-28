@@ -1,6 +1,6 @@
 from flask import Flask
 from .config import Config
-from .extensions import db, bp, login_manager
+from .extensions import db, login_manager
 import os
 
 
@@ -21,6 +21,7 @@ def create_app(config_class: type = Config):
     login_manager.init_app(app)
     
     # Register the blueprint
+    from .routes import bp
     app.register_blueprint(bp)
 
 
