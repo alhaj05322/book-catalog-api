@@ -12,7 +12,7 @@ def load_user(user_id):
     return db.get_or_404(User, user_id)
 
 # Endpoint for user login
-@bp.post("/api/login")
+@bp.post("/api/auth/login")
 def login():
     if request.method == "POST":
         login_credentials = request.get_json()
@@ -37,7 +37,7 @@ def login():
         
 
 # Endpoint for user registration
-@bp.post("/api/register")
+@bp.post("/api/auth/register")
 def register():
     if request.method == "POST":
         # Fetch user's data from request
@@ -58,12 +58,25 @@ def register():
         if password != confirm_password:
             return jsonify({"success": False,"message": "Passowrd do not match"})
         
-        
+        # If data is valid ad user to the database
+        try:
+            password_hash = generate_password_hash(password)
+            user = User(name = name, email = email, password = password_hash)
+            db.session.add(user)
+            db.session.commit()
+            return jsonify({"success": True, "message": f"User : {name} is added to the database successfuly"})
+        except Exception as e:
+            db.session.rollback()
+            print(f"An error occurred during registration: {e}")
+            flash("An unexpected error occurred. Please try again later.", "danger")
+
 
 # Endpoint for user logout
-@bp.post("/api/logout")
+@bp.post("/api/auth/logout")
+@login_required
 def logout():
-    pass
+    logout_user()
+    return jsonify({"success": True, "message": "User logged out"}), 200
 
 
 # Endpoint to retrieve all books.
