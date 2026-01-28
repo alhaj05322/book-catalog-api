@@ -3,6 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 from .models import Book, User
 from .extensions import db, login_manager, bp
+import re
 
 # CallBack function: used to reload the user object from the user ID stored in the session
 @login_manager.user_loader
@@ -38,7 +39,26 @@ def login():
 # Endpoint for user registration
 @bp.post("/api/register")
 def register():
-    pass
+    if request.method == "POST":
+        # Fetch user's data from request
+        user_data = request.get_json()
+        name = (user_data.get("name") or "").strip()
+        email = (user_data.get("email") or "").strip()
+        password = user_data.get("password") or ""
+        confirm_password = user_data.get("confirm") or ""
+
+        # Validate user's data befor store it in database
+        if not(3 <= len(name) <= 80):
+            return jsonify({"success": False, "message": "User name must be between 3 and 80 chars"})
+        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
+            return jsonify({"success": False,"message": "Invalid email"})
+        if len(password < 8):
+            return jsonify({"success": False,"message": "Passord need to be atleast 8 chars"})
+        #Check if passord and confirm passord are matched
+        if password != confirm_password:
+            return jsonify({"success": False,"message": "Passowrd do not match"})
+        
+        
 
 # Endpoint for user logout
 @bp.post("/api/logout")
