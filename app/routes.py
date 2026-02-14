@@ -1,9 +1,11 @@
-from flask import Blueprint, request, jsonify, flash
+from flask import Blueprint, request, jsonify, flash, abort
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 from .models import Book, User
 from .extensions import db, login_manager
 from flask import Blueprint
+from sqlalchemy import select
+import json
 import re
 
 bp = Blueprint("main", __name__)
@@ -67,7 +69,7 @@ def register():
             user = User(name = name, email = email, password = password_hash)
             db.session.add(user)
             db.session.commit()
-            return jsonify({"success": True, "message": f"User : {name} is added to the database successfuly"}), 201
+            return jsonify({"success": True, "message": f"User : {name} is added to the database successfully"}), 201
         except Exception as e:
             db.session.rollback()
             print(f"An error occurred during registration: {e}")
@@ -84,18 +86,82 @@ def logout():
 
 # Endpoint to retrieve all books.
 @bp.get("/api/books")
+@login_required
 def get_books():
-    pass
+    if current_user.is_authenticated:
+        stmt = select(Book)
+        result = db.session.execute(stmt).scalars().all()
+        # Convert the list of model objects into a list of dictionaries
+        books_list = [book.to_dict() for book in result]
+        return books_list
 
 # Endpoint to add a new book.
 @bp.post("/api/books")
+@login_required
 def add_books():
-    pass
+    if current_user.is_authenticated:
+        book_data = request.get_json()
+        isbn = (book_data.get("isbn") or "").strip()
+        title = (book_data.get("title") or "").strip()
+        author = (book_data.get("author") or "").strip()
+        genre = (book_data.get("gener") or "").strip()
+        published_date = (book_data.get("published_date") or "").strip()
+        cover_image_path = (book_data.get("cover_image_path") or "").strip()
+
+        if not isbn:
+            return jsonify({"success": False, "message": "ISBN is required"}), 401
+        if not title:
+            return jsonify({"success": False, "message": "Title is required"}), 401
+        if not author:
+            return jsonify({"success": False, "message": "Author is required"}), 401
+        if not cover_image_path:
+            return jsonify({"success": False, "message": "URL is required"}), 401
+    
+        try:
+            book = Book(isbn=isbn, title=title, author=author, genre=genre, published_date=published_date,cover_image_path=cover_image_path)
+            db.session.add(book)
+            db.session.commit()
+            return jsonify({"success": True, "message": f"User : {title} is added to the database successfully"}), 201
+        except Exception as e:
+            db.session.rollback()
+            print(f"An error occurred during adding a book: {e}")
+            flash("An unexpected error occurred. Please try again later.", "danger")
+            return jsonify({"success": False,"message": f"Could not add:  {title}"}), 500
+    
+
+
+
+    
+   
 
 # Endpoint to update an existing book.
 @bp.put("/api/books/<int:book_id>")
 def update_book(book_id):
-    pass
+    book = db.session.get(Book, book_id)
+    # If the book is not found, return a 404 error
+    if book is None:
+        abort(404, description="Book not found")
+
+    # Ensure the request contains JSON data
+    if not request.json:
+        abort(400, description="Invalid request format, must be JSON")
+
+    # Extract data from the request and update book attributes
+    # The 'or book.title' part ensures that if a field is missing in the request,
+    # the existing value is kept (a common pattern for PATCH, but also useful for PUT)
+    book.isbn = request.json.get('isbn', book.isbn)
+    book.title = request.json.get('title', book.title)
+    book.author = request.json.get('author', book.author)
+    book.genre = request.json.get('genre', book.genre)
+    book.published_date = request.json.get('published_date', book.published_date)
+    book.cover_image_path = request.json.get('cover_image_path', book.cover_image_path)
+    # Commit the changes to the database
+    try:
+        db.session.commit()
+        return jsonify({"success": True,'message': 'Book updated successfully', 'book_id': book.id}), 200
+    except Exception as e:
+        db.session.rollback()
+        abort(500, description=f"An error occurred: {str(e)}")
 
 # Endpoint to delete a book.
 @bp.delete("/api/books/<int:book_id>")
