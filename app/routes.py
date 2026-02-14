@@ -136,35 +136,54 @@ def add_books():
 
 # Endpoint to update an existing book.
 @bp.put("/api/books/<int:book_id>")
+@login_required
 def update_book(book_id):
-    book = db.session.get(Book, book_id)
-    # If the book is not found, return a 404 error
-    if book is None:
-        abort(404, description="Book not found")
+    if current_user.is_authenticated:
+        # Get a book by id
+        book = db.session.get(Book, book_id)
+        # If the book is not found, return a 404 error
+        if book is None:
+            abort(404, description="Book not found")
 
-    # Ensure the request contains JSON data
-    if not request.json:
-        abort(400, description="Invalid request format, must be JSON")
+        # Ensure the request contains JSON data
+        if not request.json:
+            abort(400, description="Invalid request format, must be JSON")
 
-    # Extract data from the request and update book attributes
-    # The 'or book.title' part ensures that if a field is missing in the request,
-    # the existing value is kept (a common pattern for PATCH, but also useful for PUT)
-    book.isbn = request.json.get('isbn', book.isbn)
-    book.title = request.json.get('title', book.title)
-    book.author = request.json.get('author', book.author)
-    book.genre = request.json.get('genre', book.genre)
-    book.published_date = request.json.get('published_date', book.published_date)
-    book.cover_image_path = request.json.get('cover_image_path', book.cover_image_path)
-    # Commit the changes to the database
-    try:
-        db.session.commit()
-        return jsonify({"success": True,'message': 'Book updated successfully', 'book_id': book.id}), 200
-    except Exception as e:
-        db.session.rollback()
-        abort(500, description=f"An error occurred: {str(e)}")
+        # Extract data from the request and update book attributes
+        # The 'or book.title' part ensures that if a field is missing in the request,
+        # the existing value is kept (a common pattern for PATCH, but also useful for PUT)
+        book.isbn = request.json.get('isbn', book.isbn)
+        book.title = request.json.get('title', book.title)
+        book.author = request.json.get('author', book.author)
+        book.genre = request.json.get('genre', book.genre)
+        book.published_date = request.json.get('published_date', book.published_date)
+        book.cover_image_path = request.json.get('cover_image_path', book.cover_image_path)
+        # Commit the changes to the database
+        try:
+            db.session.commit()
+            return jsonify({"success": True,'message': 'Book updated successfully', 'book_id': book.id}), 200
+        except Exception as e:
+            db.session.rollback()
+            abort(500, description=f"An error occurred: {str(e)}")
 
 # Endpoint to delete a book.
 @bp.delete("/api/books/<int:book_id>")
+@login_required
 def delete_book(book_id):
-    pass
+    if current_user.is_authenticated:
+        # Get a book by id
+        book = db.session.get(Book, book_id)
+        # If the book is not found, return a 404 error
+        if book is None:
+            abort(404, description="Book not found")
+
+        try:
+            # Delete the book from database
+            db.session.delete(book)
+            db.session.commit()
+            return jsonify({"success": True,'message': 'Book deleted successfully', 'book_id': book.id}), 200
+        except Exception as e:
+            db.session.rollback()
+            abort(500, description=f"An error occurred: {str(e)}")
+
 
