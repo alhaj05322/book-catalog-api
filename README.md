@@ -1,15 +1,17 @@
 # **Book Catalog API**
 
-This is a repository containing a sample readme file.
-
 ---
 
 ## **Description**
-This is a Flask API. It has the following properties:
+1. This is a Flask API. It has the following properties:
     1. User
     2. Book
-   A user can create an accout, login logout. After login users can add a book to database,
-   edite existing book, get a list of all books, and delete books form database.
+2. A user can create an accout, login, and logout.
+3.  After login users can perform the following operations:
+    1. add a book to database,
+    2. edite existing book
+    3. get a list of all books
+    4. delete books form database.
 
 
 ---
