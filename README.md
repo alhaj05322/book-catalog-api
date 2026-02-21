@@ -11,13 +11,6 @@ This is a Flask API. It has the following properties:
    A user can create an accout, login logout. After login users can add a book to database,
    edite existing book, get a list of all books, and delete books form database.
 
-## **Table of Contents**
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
 
 ---
 
@@ -62,59 +55,30 @@ Run ```flask run```. You may use [Postman](https://chrome.google.com/webstore/de
 
 ## Sample API Requests
 
-Registering and logging in to get a JWT token:
-![User Registration](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/api_register.png)
+Registering a user:
+![User Registration](images/create_user.png)
 
-![User Login](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/api_login.png)
+User login
+![User Login](images/login.png)
 
-Displaying a paginated list of teachers:
-![List of Teachers](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/api_list_teachers.png)
+Add a book:
+![Add Book](images/add_book.png)
 
-Displaying a paginated list of subjects:
-![List of Subjects](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/api_list_subjects.png)
+Displaying a list of books:
+![List of Books](images/all_books.png)
 
-Updating a student:
-![Updating Student](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/api_update_student.png)
+Updating a book:
+![Updating Book](images/book_update.png)
 
-## Web App
+Delete a book:
+![Delete Book](images/delete_book.png)
 
-The app has a web-based interface and can be accessed [here](https://flask-school-app.herokuapp.com/). A sample user has already been created with the following credentials:
-
-```
-username: testuser
-password: testpassword
-```
-
-Login:
-![User Login](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/app_login.png)
-
-Dashboard:
-![App Dashboard](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/app_dashboard.png)
-
-Displaying all students:
-![Students](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/app_students.png)
-
-Displaying all teachers:
-![Teachers](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/app_teachers.png)
-
-Displaying all subjects:
-![Subjects](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/app_subjects.png)
+User Logout:
+![User Logout](images/logout.png)
 
 
-## Testing
-To test, run the following command: ```nose2```
-
-## Built With...
-* [Flask](http://flask.pocoo.org/)
 ## **Contact Information**
 
-Provide your contact information or links to your social profiles for users to reach out with questions or feedback.
+- Email: alhaj05322@gmail.com
+- GitHub: https://github.com/alhaj05322
 
-Example:
-- Email: your.email@example.com
-- Twitter: [@yourhandle](https://twitter.com/yourhandle)
-- GitHub: [yourusername](https://github.com/yourusername)
-
----
-
-This structure is flexible and can be adapted to suit the specific needs of your project. The goal is to make the README informative, easy to navigate, and helpful for anyone interacting with your project.
