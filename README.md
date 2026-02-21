@@ -1,14 +1,15 @@
-# **Node Project Sampler**
+# **Book Catalog API**
 
 This is a repository containing a sample readme file.
 
 ---
 
 ## **Description**
-
-I have created this sample readme file to teach you how to come up with your own readme files using markdown.
-
----
+This is a Flask API. It has the following properties:
+    1. User
+    2. Book
+   A user can create an accout, login logout. After login users can add a book to database,
+   edite existing book, get a list of all books, and delete books form database.
 
 ## **Table of Contents**
 
@@ -20,71 +21,91 @@ I have created this sample readme file to teach you how to come up with your own
 
 ---
 
-## **Installation**
-
-Step-by-step instructions on how to install and set up the project locally. Include any dependencies, commands, or environment variables required.
-
-Example:
-```bash
-# Clone the repository
-git clone https://github.com/username/project-name.git
-
-# Navigate to the project directory
-cd project-name
-
-# Install dependencies
-npm install
+## Installation and Set Up
+Clone the repo from GitHub:
+```
+git clone https://github.com/alhaj05322/book-catalog-api.git
 ```
 
----
-
-## **Usage**
-
-Explain how to use the project. Include examples, screenshots, or code snippets to demonstrate its functionality. If applicable, provide instructions for different use cases or environments.
-
-Example:
-```python
-# Example code snippet
-import project_name
-
-result = project_name.do_something()
-print(result)
+Navigate to the root folder:
+```
+cd book-catalog-api
 ```
 
----
+Install the required packages:
+```
+pip install -r requirements.txt
+```
 
-## **Contributing**
+Create the database
+```
+python create_db.py
+```
 
-Guidelines for contributing to the project. Include information on how to report bugs, suggest features, or submit pull requests. Mention any coding standards or workflows contributors should follow.
 
-Example:
-- Fork the repository.
-- Create a new branch for your feature (`git checkout -b feature/AmazingFeature`).
-- Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-- Push to the branch (`git push origin feature/AmazingFeature`).
-- Open a pull request.
 
----
+## Launching the Program
+Run ```flask run```. You may use [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop?hl=en) for Google Chrome to run the API.
 
-## **License**
+## API Endpoints
 
-Specify the license under which the project is distributed. Include a link to the full license text if applicable.
+| Resource URL | Methods | Description | Requires Login |
+| -------- | ------------- | --------- |--------------- |
+| `/api` | GET  | The index | FALSE |
+| `/api/auth/register` | POST  | User registration | FALSE |
+|  `/api/auth/login` | POST | User login | FALSE |
+|  `/api/auth/logout` | POST | User logout | TRUE |
+| `/api/books` | GET, POST | View all books, add a book | TRUE |
+| `/api/books/<int:book_id>` | PUT, DELETE | edit, and delete a single book | TRUE |
 
-Example:
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
----
 
-## **Acknowledgments**
+## Sample API Requests
 
-Give credit to any resources, libraries, or individuals that helped in the development of the project. This can include links to tutorials, tools, or inspiration.
+Registering and logging in to get a JWT token:
+![User Registration](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/api_register.png)
 
-Example:
-- [Awesome Library](https://github.com/awesome/library) for making this project possible.
-- Thanks to [Contributor Name](https://github.com/contributor) for their valuable input.
+![User Login](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/api_login.png)
 
----
+Displaying a paginated list of teachers:
+![List of Teachers](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/api_list_teachers.png)
 
+Displaying a paginated list of subjects:
+![List of Subjects](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/api_list_subjects.png)
+
+Updating a student:
+![Updating Student](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/api_update_student.png)
+
+## Web App
+
+The app has a web-based interface and can be accessed [here](https://flask-school-app.herokuapp.com/). A sample user has already been created with the following credentials:
+
+```
+username: testuser
+password: testpassword
+```
+
+Login:
+![User Login](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/app_login.png)
+
+Dashboard:
+![App Dashboard](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/app_dashboard.png)
+
+Displaying all students:
+![Students](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/app_students.png)
+
+Displaying all teachers:
+![Teachers](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/app_teachers.png)
+
+Displaying all subjects:
+![Subjects](https://github.com/mbithenzomo/flask-student-api/blob/master/screenshots/app_subjects.png)
+
+
+## Testing
+To test, run the following command: ```nose2```
+
+## Built With...
+* [Flask](http://flask.pocoo.org/)
 ## **Contact Information**
 
 Provide your contact information or links to your social profiles for users to reach out with questions or feedback.
