@@ -9,7 +9,7 @@
 2. A user can create an accout, login, and logout.
 3.  After login users can perform the following operations:
     1. add a book to database,
-    2. edite existing book
+    2. edit existing book
     3. get a list of all books
     4. delete books form database.
 
